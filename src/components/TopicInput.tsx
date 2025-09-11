@@ -7,13 +7,14 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { BookOpen, Loader2, Sparkles } from "lucide-react";
 
 interface TopicInputProps {
-  onSubmit: (topic: string, questionCount: number) => void;
+  onSubmit: (topic: string, questionCount: number, difficulty: string) => void;
   isGenerating: boolean;
 }
 
 export const TopicInput = ({ onSubmit, isGenerating }: TopicInputProps) => {
   const [topic, setTopic] = useState("");
   const [questionCount, setQuestionCount] = useState<number>(10);
+  const [difficulty, setDifficulty] = useState<string>("medium");
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -22,7 +23,7 @@ export const TopicInput = ({ onSubmit, isGenerating }: TopicInputProps) => {
       return;
     }
 
-    onSubmit(topic.trim(), questionCount);
+    onSubmit(topic.trim(), questionCount, difficulty);
   };
 
   const popularTopics = [
@@ -76,6 +77,20 @@ export const TopicInput = ({ onSubmit, isGenerating }: TopicInputProps) => {
                   <SelectItem value="10">10 Questions</SelectItem>
                   <SelectItem value="15">15 Questions</SelectItem>
                   <SelectItem value="20">20 Questions</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="difficulty">Difficulty Level</Label>
+              <Select value={difficulty} onValueChange={setDifficulty}>
+                <SelectTrigger className="bg-muted/50 border-primary/20">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="easy">Easy</SelectItem>
+                  <SelectItem value="medium">Medium</SelectItem>
+                  <SelectItem value="hard">Hard</SelectItem>
                 </SelectContent>
               </Select>
             </div>

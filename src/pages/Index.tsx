@@ -35,10 +35,10 @@ const Index = () => {
     setCurrentStep("topic");
   };
 
-  const handleTopicSubmit = async (topic: string, questionCount: number) => {
+  const handleTopicSubmit = async (topic: string, questionCount: number, difficulty: string) => {
     setIsGenerating(true);
     try {
-      const questions = await generateQuizQuestions(topic, questionCount, apiKey);
+      const questions = await generateQuizQuestions(topic, questionCount, difficulty, apiKey);
       setQuizQuestions(questions);
       setCurrentStep("quiz");
       toast({

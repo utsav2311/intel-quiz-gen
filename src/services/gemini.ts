@@ -8,14 +8,14 @@ export class GeminiService {
     this.apiKey = apiKey;
   }
 
-  async generateQuizQuestions(topic: string, count: number): Promise<Question[]> {
-    const prompt = `Create a quiz about "${topic}" with exactly ${count} multiple-choice questions. 
+  async generateQuizQuestions(topic: string, count: number, difficulty: string): Promise<Question[]> {
+    const prompt = `Create a quiz about "${topic}" with exactly ${count} multiple-choice questions at ${difficulty} difficulty level. 
     
     Each question should have:
     - A clear, well-written question
     - Exactly 4 answer options (A, B, C, D)
     - One correct answer
-    - The questions should vary in difficulty from basic to intermediate
+    - The questions should be at ${difficulty} difficulty level consistently
     - Questions should be factual and have definitive correct answers
     
     Format your response as a JSON array where each question follows this exact structure:
@@ -125,7 +125,7 @@ export class GeminiService {
   }
 }
 
-export const generateQuizQuestions = async (topic: string, count: number, apiKey: string): Promise<Question[]> => {
+export const generateQuizQuestions = async (topic: string, count: number, difficulty: string, apiKey: string): Promise<Question[]> => {
   const gemini = new GeminiService(apiKey);
-  return gemini.generateQuizQuestions(topic, count);
+  return gemini.generateQuizQuestions(topic, count, difficulty);
 };
