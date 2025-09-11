@@ -18,12 +18,12 @@ export const ApiKeySetup = ({ onSubmit }: ApiKeySetupProps) => {
     e.preventDefault();
     
     if (!apiKey.trim()) {
-      setError("Please enter your OpenAI API key");
+      setError("Please enter your Gemini API key");
       return;
     }
 
-    if (!apiKey.startsWith("sk-")) {
-      setError("Invalid API key format. OpenAI API keys start with 'sk-'");
+    if (!apiKey.startsWith("AIza")) {
+      setError("Invalid API key format. Gemini API keys start with 'AIza'");
       return;
     }
 
@@ -42,18 +42,18 @@ export const ApiKeySetup = ({ onSubmit }: ApiKeySetupProps) => {
             Setup API Key
           </CardTitle>
           <CardDescription>
-            Enter your OpenAI API key to generate AI-powered quiz questions
+            Enter your Google Gemini API key to generate AI-powered quiz questions
           </CardDescription>
         </CardHeader>
         
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="apiKey">OpenAI API Key</Label>
+              <Label htmlFor="apiKey">Google Gemini API Key</Label>
               <Input
                 id="apiKey"
                 type="password"
-                placeholder="sk-..."
+                placeholder="AIza..."
                 value={apiKey}
                 onChange={(e) => setApiKey(e.target.value)}
                 className="bg-muted/50 border-primary/20 focus:border-primary focus:ring-primary/20"
@@ -79,12 +79,12 @@ export const ApiKeySetup = ({ onSubmit }: ApiKeySetupProps) => {
             <p className="text-sm text-muted-foreground">
               Don't have an API key?{" "}
               <a 
-                href="https://platform.openai.com/api-keys" 
+                href="https://aistudio.google.com/app/apikey" 
                 target="_blank" 
                 rel="noopener noreferrer"
                 className="text-primary hover:text-primary-glow underline"
               >
-                Get one from OpenAI
+                Get one from Google AI Studio
               </a>
             </p>
           </div>

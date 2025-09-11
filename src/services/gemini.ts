@@ -1,8 +1,8 @@
 import { Question } from "@/pages/Index";
 
-export class OpenAIService {
+export class GeminiService {
   private apiKey: string;
-  private baseURL = "https://api.openai.com/v1/chat/completions";
+  private baseURL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent";
 
   constructor(apiKey: string) {
     this.apiKey = apiKey;
@@ -30,26 +30,25 @@ export class OpenAIService {
     Return ONLY the JSON array, no additional text or formatting.`;
 
     try {
-      const response = await fetch(this.baseURL, {
+      const response = await fetch(`${this.baseURL}?key=${this.apiKey}`, {
         method: "POST",
         headers: {
-          "Authorization": `Bearer ${this.apiKey}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          model: "gpt-3.5-turbo",
-          messages: [
+          contents: [
             {
-              role: "system",
-              content: "You are a quiz generator that creates educational multiple-choice questions. Always respond with valid JSON only."
-            },
-            {
-              role: "user",
-              content: prompt
+              parts: [
+                {
+                  text: `You are a quiz generator that creates educational multiple-choice questions. Always respond with valid JSON only.\n\n${prompt}`
+                }
+              ]
             }
           ],
-          temperature: 0.7,
-          max_tokens: 2000,
+          generationConfig: {
+            temperature: 0.7,
+            maxOutputTokens: 2000,
+          },
         }),
       });
 
@@ -58,25 +57,25 @@ export class OpenAIService {
         
         // Handle specific error cases with user-friendly messages
         if (response.status === 429) {
-          throw new Error("API quota exceeded. Please check your OpenAI billing and upgrade your plan if needed.");
+          throw new Error("API quota exceeded. Please check your Gemini API usage and billing details.");
         }
         
         if (response.status === 401) {
-          throw new Error("Invalid API key. Please check your OpenAI API key and try again.");
+          throw new Error("Invalid API key. Please check your Gemini API key and try again.");
         }
         
         if (response.status === 403) {
           throw new Error("Access denied. Please verify your API key has the required permissions.");
         }
         
-        throw new Error(`OpenAI API error: ${response.status} ${response.statusText}. ${errorData.error?.message || ''}`);
+        throw new Error(`Gemini API error: ${response.status} ${response.statusText}. ${errorData.error?.message || ''}`);
       }
 
       const data = await response.json();
-      const content = data.choices?.[0]?.message?.content;
+      const content = data.candidates?.[0]?.content?.parts?.[0]?.text;
 
       if (!content) {
-        throw new Error("No content received from OpenAI API");
+        throw new Error("No content received from Gemini API");
       }
 
       // Parse the JSON response
@@ -86,12 +85,12 @@ export class OpenAIService {
         const cleanContent = content.replace(/```json\n?|\n?```/g, '').trim();
         questionsData = JSON.parse(cleanContent);
       } catch (parseError) {
-        console.error("Failed to parse OpenAI response:", content);
-        throw new Error("Invalid JSON response from OpenAI API");
+        console.error("Failed to parse Gemini response:", content);
+        throw new Error("Invalid JSON response from Gemini API");
       }
 
       if (!Array.isArray(questionsData)) {
-        throw new Error("Expected an array of questions from OpenAI API");
+        throw new Error("Expected an array of questions from Gemini API");
       }
 
       // Transform to our Question format with IDs
@@ -108,7 +107,7 @@ export class OpenAIService {
             question.options.length !== 4 || 
             typeof question.correctAnswer !== 'number' ||
             question.correctAnswer < 0 || question.correctAnswer > 3) {
-          throw new Error("Invalid question format received from OpenAI API");
+          throw new Error("Invalid question format received from Gemini API");
         }
       }
 
@@ -127,6 +126,6 @@ export class OpenAIService {
 }
 
 export const generateQuizQuestions = async (topic: string, count: number, apiKey: string): Promise<Question[]> => {
-  const openAI = new OpenAIService(apiKey);
-  return openAI.generateQuizQuestions(topic, count);
+  const gemini = new GeminiService(apiKey);
+  return gemini.generateQuizQuestions(topic, count);
 };

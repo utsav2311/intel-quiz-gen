@@ -3,7 +3,7 @@ import { ApiKeySetup } from "@/components/ApiKeySetup";
 import { TopicInput } from "@/components/TopicInput";
 import { QuizInterface } from "@/components/QuizInterface";
 import { Scorecard } from "@/components/Scorecard";
-import { generateQuizQuestions } from "@/services/openai";
+import { generateQuizQuestions } from "@/services/gemini";
 import { Brain, Sparkles } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
