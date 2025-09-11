@@ -55,6 +55,20 @@ export class OpenAIService {
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
+        
+        // Handle specific error cases with user-friendly messages
+        if (response.status === 429) {
+          throw new Error("API quota exceeded. Please check your OpenAI billing and upgrade your plan if needed.");
+        }
+        
+        if (response.status === 401) {
+          throw new Error("Invalid API key. Please check your OpenAI API key and try again.");
+        }
+        
+        if (response.status === 403) {
+          throw new Error("Access denied. Please verify your API key has the required permissions.");
+        }
+        
         throw new Error(`OpenAI API error: ${response.status} ${response.statusText}. ${errorData.error?.message || ''}`);
       }
 
