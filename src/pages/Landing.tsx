@@ -1,9 +1,12 @@
-import { Brain, Sparkles, Zap, BookOpen, Target, Star } from "lucide-react";
+import { Brain, Sparkles, Zap, BookOpen, Target, Star, User, LogOut, History } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 
 const Landing = () => {
+  const { user, signOut } = useAuth();
+
   return (
     <div className="min-h-screen bg-background">
       {/* Navigation */}
@@ -18,11 +21,45 @@ const Landing = () => {
                 AI Quiz Generator
               </h1>
             </div>
-            <Link to="/quiz">
-              <Button className="bg-gradient-primary hover:bg-gradient-primary/90 shadow-glow">
-                Get Started
-              </Button>
-            </Link>
+            <div className="flex items-center gap-3">
+              {user ? (
+                <>
+                  <Link to="/history">
+                    <Button variant="ghost" className="flex items-center gap-2">
+                      <History className="h-4 w-4" />
+                      History
+                    </Button>
+                  </Link>
+                  <Link to="/quiz">
+                    <Button className="bg-gradient-primary hover:bg-gradient-primary/90 shadow-glow">
+                      Create Quiz
+                    </Button>
+                  </Link>
+                  <Button
+                    variant="outline"
+                    onClick={signOut}
+                    className="flex items-center gap-2"
+                  >
+                    <LogOut className="h-4 w-4" />
+                    Sign Out
+                  </Button>
+                </>
+              ) : (
+                <>
+                  <Link to="/auth">
+                    <Button variant="ghost" className="flex items-center gap-2">
+                      <User className="h-4 w-4" />
+                      Sign In
+                    </Button>
+                  </Link>
+                  <Link to="/quiz">
+                    <Button className="bg-gradient-primary hover:bg-gradient-primary/90 shadow-glow">
+                      Get Started
+                    </Button>
+                  </Link>
+                </>
+              )}
+            </div>
           </div>
         </div>
       </nav>

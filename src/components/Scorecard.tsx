@@ -4,18 +4,57 @@ import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Trophy, RefreshCw, Plus, Clock, Target, CheckCircle, XCircle } from "lucide-react";
 import { QuizResults } from "@/types/quiz";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
+import { useEffect } from "react";
 
 interface ScorecardProps {
   results: QuizResults;
   onRestart: () => void;
   onNewQuiz: () => void;
+  topic: string;
 }
 
-export const Scorecard = ({ results, onRestart, onNewQuiz }: ScorecardProps) => {
+export const Scorecard = ({ results, onRestart, onNewQuiz, topic }: ScorecardProps) => {
   const { score, totalQuestions, questions, timeSpent } = results;
   const percentage = Math.round((score / totalQuestions) * 100);
   const minutes = Math.floor(timeSpent / 60);
   const seconds = timeSpent % 60;
+  const { user } = useAuth();
+  const { toast } = useToast();
+
+  // Save quiz results to database when component mounts
+  useEffect(() => {
+    const saveQuizResults = async () => {
+      if (user) {
+        try {
+          const { error } = await supabase
+            .from('quiz_history')
+            .insert({
+              user_id: user.id,
+              topic: topic,
+              score: score,
+              total_questions: totalQuestions,
+              questions_data: JSON.parse(JSON.stringify(questions))
+            });
+
+          if (error) {
+            console.error('Error saving quiz results:', error);
+            toast({
+              title: 'Warning',
+              description: 'Quiz completed but results were not saved to your history.',
+              variant: 'destructive'
+            });
+          }
+        } catch (error) {
+          console.error('Error saving quiz results:', error);
+        }
+      }
+    };
+
+    saveQuizResults();
+  }, [user, topic, score, totalQuestions, questions, toast]);
 
   const getScoreColor = () => {
     if (percentage >= 80) return "success";

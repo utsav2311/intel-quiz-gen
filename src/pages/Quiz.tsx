@@ -15,6 +15,7 @@ const Quiz = () => {
   const [currentStep, setCurrentStep] = useState<"setup" | "topic" | "quiz" | "results">("setup");
   const [quizQuestions, setQuizQuestions] = useState<Question[]>([]);
   const [quizResults, setQuizResults] = useState<QuizResults | null>(null);
+  const [currentTopic, setCurrentTopic] = useState<string>("");
   const [isGenerating, setIsGenerating] = useState(false);
   const { toast } = useToast();
 
@@ -25,6 +26,7 @@ const Quiz = () => {
 
   const handleTopicSubmit = async (topic: string, questionCount: number, difficulty: string) => {
     setIsGenerating(true);
+    setCurrentTopic(topic);
     try {
       const questions = await generateQuizQuestions(topic, questionCount, difficulty, apiKey);
       setQuizQuestions(questions);
@@ -54,6 +56,7 @@ const Quiz = () => {
     setCurrentStep("topic");
     setQuizQuestions([]);
     setQuizResults(null);
+    setCurrentTopic("");
   };
 
   const handleNewQuiz = () => {
@@ -61,6 +64,7 @@ const Quiz = () => {
     setApiKey("");
     setQuizQuestions([]);
     setQuizResults(null);
+    setCurrentTopic("");
   };
 
   return (
@@ -105,7 +109,7 @@ const Quiz = () => {
         )}
         
         {currentStep === "results" && quizResults && (
-          <Scorecard results={quizResults} onRestart={handleRestart} onNewQuiz={handleNewQuiz} />
+          <Scorecard results={quizResults} onRestart={handleRestart} onNewQuiz={handleNewQuiz} topic={currentTopic} />
         )}
       </main>
     </div>
