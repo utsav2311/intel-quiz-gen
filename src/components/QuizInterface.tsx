@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Clock, CheckCircle, XCircle } from "lucide-react";
-import { Question, QuizResults } from "@/pages/Index";
+import { Question, QuizResults } from "@/types/quiz";
 
 interface QuizInterfaceProps {
   questions: Question[];

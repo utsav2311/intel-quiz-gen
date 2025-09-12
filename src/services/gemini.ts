@@ -1,4 +1,4 @@
-import { Question } from "@/pages/Index";
+import { Question } from "@/types/quiz";
 
 export class GeminiService {
   private apiKey: string;

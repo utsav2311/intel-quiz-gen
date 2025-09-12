@@ -3,7 +3,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Trophy, RefreshCw, Plus, Clock, Target, CheckCircle, XCircle } from "lucide-react";
-import { QuizResults } from "@/pages/Index";
+import { QuizResults } from "@/types/quiz";
 
 interface ScorecardProps {
   results: QuizResults;
